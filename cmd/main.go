@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -15,12 +14,15 @@ import (
 )
 
 func main() {
-	dsn := "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
-	gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	dsn := "server=localhost;database=portfolio;user=kraaash;password=123456;port=1433;encrypt=disable"
+	gormDB, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Fallo al conectar a la base de datos: %v", err)
+	}
 	
 
 	// Load Repositories
-	emailRepo := dbActions.NewEmailRepository()
+	emailRepo := dbActions.NewEmailRepository(gormDB)
 	emailApiRepo := apiServices.NewApiEmailRepository()
 
 	// Load Services
@@ -32,7 +34,6 @@ func main() {
 	api.NewEmailController(r, productService)
 
 	// Iniciar servidor
-    fmt.Println("Iniciando el servidor en el puerto 8080...")
     if err := http.ListenAndServe(":8080", r); err != nil {
         log.Fatalf("Fallo al iniciar servidor: %v", err)
     }

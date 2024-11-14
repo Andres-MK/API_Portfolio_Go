@@ -8,15 +8,17 @@ import (
 )
 
 type Email struct {
-	Id        uuid.UUID 
-	EmailFrom string 
-	EmailTo   string 
-	Subject   string 
-	Html      string 
-	FirstName string 
-	LastName  string 
-	Message   string 
-	CreatedAt time.Time 
+	IdEmail   uuid.UUID `gorm:"column:IdEmail"`
+	EmailFrom string    `gorm:"column:EmailFrom"`
+	EmailTo   string    `gorm:"column:EmailTo"`
+	Subject   string 	`gorm:"column:Subject"`
+	Html      string 	`gorm:"column:Html"`
+	FirstName string 	`gorm:"column:FirstName"`
+	LastName  string 	`gorm:"column:LastName"`
+	Message   string 	`gorm:"column:Message"`
+	CreatedAt time.Time `gorm:"column:CreatedAt"`
+	Company   string	`gorm:"column:Company"`
+	ItisRead  bool 		`gorm:"column:ItisRead"`
 }
 
 func (p *Email) validate() error {
@@ -39,9 +41,9 @@ func (p *Email) validate() error {
 	return nil
 }
 
-func NewEmail(emailFrom, emailTo, subject, html, firstName, lastName, message string) *Email {
+func NewEmail(emailFrom, emailTo, subject, html, firstName, lastName, message, company string) *Email {
 	return &Email{
-		Id:        	uuid.New(),
+		IdEmail:    uuid.New(),
 		EmailFrom:  emailFrom,
 		EmailTo: 	emailTo,
 		Subject:	subject,
@@ -49,7 +51,7 @@ func NewEmail(emailFrom, emailTo, subject, html, firstName, lastName, message st
 		FirstName:	firstName,
 		LastName:	lastName,
 		Message:	message,
-		CreatedAt:  time.Now(),
+		Company:    company,
 	}
 }
 

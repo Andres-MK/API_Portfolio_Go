@@ -10,6 +10,7 @@ type CreateEmailRequest struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Message   string `json:"message"`
+	Company   string `json:"company"`
 }
 
 func (req *CreateEmailRequest) ToCreateEmailCommand() (*command.CreateEmailCommand, error) {
@@ -22,5 +23,6 @@ func (req *CreateEmailRequest) ToCreateEmailCommand() (*command.CreateEmailComma
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Message:   req.Message,
+		Company:   req.Company,
 	}, nil
 }

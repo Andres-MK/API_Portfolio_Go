@@ -6,6 +6,7 @@ import (
 
 	"github.com/Andres-MK/internal/api/dto/mapper"
 	"github.com/Andres-MK/internal/api/dto/request"
+	"github.com/Andres-MK/internal/api/dto/response"
 	"github.com/Andres-MK/internal/application/interfaces"
 	"github.com/gorilla/mux"
 )
@@ -20,6 +21,8 @@ func NewEmailController(r *mux.Router, services interfaces.EmailService) *EmailC
 	}
 
 	r.HandleFunc("/email", controller.CreateEmailController).Methods("POST")	
+	r.HandleFunc("/email", controller.GetAllEmailController).Methods("GET")
+
 	return controller
 	
 }
@@ -28,28 +31,32 @@ func (ec *EmailController) CreateEmailController(w http.ResponseWriter, r *http.
 	var sendEmailRequest request.CreateEmailRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&sendEmailRequest); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.SendError(w, err.Error())
 		return 
 	}
 
 	emailCommand, err := sendEmailRequest.ToCreateEmailCommand()
 	if err != nil {
-		http.Error(w, "Objeto no válido", http.StatusBadRequest)
+		response.SendError(w, err.Error())
         return
 	}
 
-	result, err := ec.service.SendEmail(emailCommand)
+	_, err = ec.service.SendEmail(emailCommand)
 	if err != nil {
-		http.Error(w, "Error al enviar el email", http.StatusInternalServerError)
+		response.SendError(w, err.Error())
 		return
 	}
 
-	response := mapper.ToEmailResponse(result.Result)
-	
-	w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    err = json.NewEncoder(w).Encode(response)
-    if err != nil {
-        http.Error(w, "Error al enviar la respuesta", http.StatusInternalServerError)
-    }
+	response.SendCreated(w)	
+}
+
+func (ec *EmailController) GetAllEmailController(w http.ResponseWriter, r *http.Request) {
+	emails, err := ec.service.GetAllEmail()
+	if err != nil {
+		response.SendNotFound(w)
+		return
+	}
+
+	resp := mapper.ToEmailListResponse(emails.Result)
+	response.SendData(w, resp)	
 }

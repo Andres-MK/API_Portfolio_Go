@@ -4,6 +4,7 @@ import (
 	"github.com/Andres-MK/internal/application/command"
 	"github.com/Andres-MK/internal/application/interfaces"
 	"github.com/Andres-MK/internal/application/mapper"
+	"github.com/Andres-MK/internal/application/query"
 	"github.com/Andres-MK/internal/domain/entities"
 	"github.com/Andres-MK/internal/domain/repositories"
 )
@@ -23,6 +24,7 @@ func NewEmailService(emailRepository repositories.EmailRepository,
 }
 
 func (s *EmailService) SendEmail(emailCommand *command.CreateEmailCommand) (*command.CreateEmailCommandResult, error) {
+
 	var newEmail = entities.NewEmail(
 		emailCommand.EmailFrom,
 		emailCommand.EmailTo,
@@ -31,6 +33,7 @@ func (s *EmailService) SendEmail(emailCommand *command.CreateEmailCommand) (*com
 		emailCommand.FirstName,
 		emailCommand.LastName,
 		emailCommand.Message,
+		emailCommand.Company,
 	)
 
 	validateEmail, err := entities.NewValidatedEmail(newEmail)
@@ -38,11 +41,11 @@ func (s *EmailService) SendEmail(emailCommand *command.CreateEmailCommand) (*com
 		return nil, err
 	}
 
-	// _, err = s.emailRepository.Create(validateEmail)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
+	err = s.emailRepository.Create(validateEmail)
+	if err != nil {
+		return nil, err
+	}
+	
 	err = s.apiEmailRepository.ResendEmail(validateEmail)
 	if err != nil {
 		return nil, err
@@ -53,6 +56,19 @@ func (s *EmailService) SendEmail(emailCommand *command.CreateEmailCommand) (*com
 	}
 
 	return &result, nil
-	
 }
 
+
+func (s *EmailService) GetAllEmail() (*query.ListEmailsQueryResult, error) {
+	emails, err := s.emailRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var queryListResult query.ListEmailsQueryResult
+	for _, email := range emails {
+		queryListResult.Result = append(queryListResult.Result, mapper.NewEmailResultFromEntity(email))
+	}
+
+	return &queryListResult, nil
+}

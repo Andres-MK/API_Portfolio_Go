@@ -16,5 +16,6 @@ type EmailResult struct {
 	LastName  		string 
 	Message   		string 
 	CreatedAt 		time.Time 
-	Msg_Response  	string 
+	Company   		string 
+	ItisRead  		bool	
 }

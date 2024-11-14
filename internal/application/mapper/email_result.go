@@ -10,8 +10,13 @@ func NewEmailResultFromValidatedEntity(email *entities.ValidatedEmail) *common.E
 }
 
 func NewEmailResultFromEntity(email *entities.Email) *common.EmailResult {
+
+	if email == nil {
+		return nil
+	}
+	
 	return &common.EmailResult{
-		Id:        email.Id,
+		Id:        email.IdEmail,
 		EmailFrom: email.EmailFrom,
 		EmailTo:   email.EmailTo,
 		Subject:   email.Subject,
@@ -20,6 +25,8 @@ func NewEmailResultFromEntity(email *entities.Email) *common.EmailResult {
 		LastName:  email.LastName,
 		Message:   email.Message,
 		CreatedAt: email.CreatedAt,
+		Company:   email.Company,
+		ItisRead:  email.ItisRead,
 	}
 }
 

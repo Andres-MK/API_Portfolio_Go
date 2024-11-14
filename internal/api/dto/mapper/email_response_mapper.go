@@ -1,6 +1,8 @@
 package mapper
 
 import (
+	"fmt"
+
 	"github.com/Andres-MK/internal/api/dto/response"
 	"github.com/Andres-MK/internal/application/common"
 )
@@ -16,6 +18,18 @@ func ToEmailResponse(email *common.EmailResult) *response.EmailResponse {
 		LastName:  email.LastName,
 		Message:   email.Message,
 		CreatedAt: email.CreatedAt,
+		Company:   email.Company,
+		ItisRead:  email.ItisRead,
 	}
 }
+
+func ToEmailListResponse(emails []*common.EmailResult) *response.ListEmailsResponse {
+	var responseList []*response.EmailResponse
+	for _, email := range emails {
+		fmt.Println(email)
+		responseList = append(responseList, ToEmailResponse(email))
+	}
+	return &response.ListEmailsResponse{Emails: responseList}
+}
+
 

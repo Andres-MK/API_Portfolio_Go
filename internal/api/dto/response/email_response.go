@@ -12,8 +12,10 @@ type EmailResponse struct {
 	LastName  string    `json:"last_name"`
 	Message   string    `json:"message"`
 	CreatedAt time.Time `json:"created_at"`
+	Company   string    `json:"company"`
+	ItisRead  bool      `json:"itis_read"`
 }
 
 type ListEmailsResponse struct {
-	Emails []*EmailResponse `json:"Emails"`
+	Emails []*EmailResponse `json:"emails"`
 }
