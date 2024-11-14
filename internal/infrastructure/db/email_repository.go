@@ -29,9 +29,6 @@ func (repo *EmailRepository) GetAll() ([]*entities.Email, error) {
 	if err := repo.db.Table("EmailsRegister").Find(&dbEmails).Error; err != nil {
 		return nil, err
 	}
-
-	
-	
 	return dbEmails, nil
 }
 

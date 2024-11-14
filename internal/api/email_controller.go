@@ -21,7 +21,7 @@ func NewEmailController(r *mux.Router, services interfaces.EmailService) *EmailC
 	}
 
 	r.HandleFunc("/email", controller.CreateEmailController).Methods("POST")	
-	r.HandleFunc("/email", controller.GetAllEmailController).Methods("GET")
+	
 
 	return controller
 	
